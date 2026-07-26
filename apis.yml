@@ -1,9 +1,30 @@
 aid: fermat
 name: Fermat
-description: 'Fermat is a company surfaced as a portfolio company of bain-capital-ventures, greylock,
-  qed-investors and added to the API Evangelist network as a stub for enrichment. Sector: commerce. This
-  profile is a lead awaiting the enrichment pipeline.'
+description: >-
+  FERMÀT is an AI-native commerce platform that consolidates the shopper
+  analytics, personalization, and experimentation stack into a single agentic
+  system for direct-to-consumer and enterprise brands. It runs a closed loop —
+  detect shopper behavior, recommend revenue-optimizing actions, generate
+  adaptive storefront experiences and product pages, then feed performance
+  signals back into detection — replacing tools like FullStory, Amplitude,
+  Algolia, and Optimizely. FERMÀT integrates with ecommerce platforms including
+  Shopify Plus, Salesforce Commerce Cloud, Adobe Commerce, and Oracle ATG via
+  batch and streaming data syncs, and serves brands such as Glossier, GNC,
+  Backcountry, AWAY, Travelpro, and TONAL. Surfaced as a portfolio company of
+  Bain Capital Ventures, Greylock, and QED Investors.
 url: https://raw.githubusercontent.com/api-evangelist/fermat/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://www.fermatcommerce.com/assets/marketing/brand/open-graph.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
@@ -14,10 +35,16 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Commerce
+- Ecommerce
+- Personalization
+- Analytics
+- Conversion Rate Optimization
+- AI
+- Merchandising
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -27,3 +54,35 @@ maintainers:
 common:
 - type: Website
   url: https://www.fermatcommerce.com/
+- type: About
+  url: https://www.fermatcommerce.com/about
+- type: Blog
+  url: https://www.fermatcommerce.com/resources
+- type: Newsroom
+  url: https://www.fermatcommerce.com/newsroom
+- type: Support
+  url: https://help.fermatcommerce.com/en/
+- type: HelpCenter
+  url: https://help.fermatcommerce.com/en/
+- type: Login
+  url: https://app.fermatcommerce.com
+- type: TermsOfService
+  url: https://www.fermatcommerce.com/terms
+- type: PrivacyPolicy
+  url: https://www.fermatcommerce.com/privacy
+- type: ChangeLog
+  url: https://help.fermatcommerce.com/en/articles/11588666-what-s-new-at-fermat-product-features-and-updates
+- type: ChangeLog
+  name: Fermat changelog (structured)
+  url: changelog/fermat-changelog.yml
+- type: Compliance
+  url: https://www.fermatcommerce.com/subprocessor-list
+- type: Conformance
+  url: conformance/fermat-conformance.yml
+- type: DomainSecurity
+  url: security/fermat-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

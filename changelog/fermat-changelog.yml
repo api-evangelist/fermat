@@ -1,0 +1,24 @@
+generated: '2026-07-19'
+method: searched
+source: https://help.fermatcommerce.com/en/articles/11588666-what-s-new-at-fermat-product-features-and-updates
+scheme: dated
+cadence: continuous (daily release cadence)
+current_version: null
+entries:
+  - date: '2026-07-09'
+    breaking: false
+    highlights:
+      - Friction Points — ranked feed of frustrating page elements with session-replay links
+      - Site error logs with live JavaScript error tracking and Slack alerts
+      - Dedicated storefront search engine with improved relevance
+      - AI Shopping Assistant answers support questions from help-center content
+  - date: '2026-07-03'
+    breaking: false
+    highlights:
+      - Order attribution accuracy improved from ~25% to nearly 100%
+      - Native cart handoff — direct sync to the brand's own checkout
+      - Bug fixes for product ranking and analytics
+  - date: '2026-07-01'
+    breaking: false
+    highlights:
+      - Launched "august" — a human-prediction platform powered by Digital Twins of real customers
