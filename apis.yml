@@ -1,29 +1,30 @@
 aid: fermat
 name: Fermat
-description: >-
-  FERMÀT is an AI-native commerce platform that consolidates the shopper
-  analytics, personalization, and experimentation stack into a single agentic
-  system for direct-to-consumer and enterprise brands. It runs a closed loop —
-  detect shopper behavior, recommend revenue-optimizing actions, generate
-  adaptive storefront experiences and product pages, then feed performance
-  signals back into detection — replacing tools like FullStory, Amplitude,
-  Algolia, and Optimizely. FERMÀT integrates with ecommerce platforms including
-  Shopify Plus, Salesforce Commerce Cloud, Adobe Commerce, and Oracle ATG via
-  batch and streaming data syncs, and serves brands such as Glossier, GNC,
-  Backcountry, AWAY, Travelpro, and TONAL. Surfaced as a portfolio company of
-  Bain Capital Ventures, Greylock, and QED Investors.
+description: FERMÀT is an AI-native commerce platform that consolidates the shopper analytics, personalization,
+  and experimentation stack into a single agentic system for direct-to-consumer and enterprise brands.
+  It runs a closed loop — detect shopper behavior, recommend revenue-optimizing actions, generate adaptive
+  storefront experiences and product pages, then feed performance signals back into detection — replacing
+  tools like FullStory, Amplitude, Algolia, and Optimizely. FERMÀT integrates with ecommerce platforms
+  including Shopify Plus, Salesforce Commerce Cloud, Adobe Commerce, and Oracle ATG via batch and streaming
+  data syncs, and serves brands such as Glossier, GNC, Backcountry, AWAY, Travelpro, and TONAL. Surfaced
+  as a portfolio company of Bain Capital Ventures, Greylock, and QED Investors.
 url: https://raw.githubusercontent.com/api-evangelist/fermat/refs/heads/main/apis.yml
 accessModel:
-  pricing: unknown
-  onboarding: unknown
+  pricing: contact-sales
+  onboarding: sales-gated
   trial: false
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  label: Customer only
+  confidence: high
+  source:
+  - https://www.fermatcommerce.com/pricing (301 to root)
+  - https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+  - https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  generated: '2026-08-13'
+  method: searched
+  note: No public pricing and no self-serve sign-up. MCP access requires an existing FERMAT platform account;
+    Pixel IDs are issued by a FERMAT representative.
 image: https://www.fermatcommerce.com/assets/marketing/brand/open-graph.png
 x-type: company
 x-source: vc-portfolio
@@ -31,11 +32,12 @@ x-backed-by:
 - bain-capital-ventures
 - greylock
 - qed-investors
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: live remote MCP server (64 published tools) + first-party browser pixel with a documented
+  event schema
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-13'
 tags:
 - Company
 - Commerce
@@ -45,7 +47,66 @@ tags:
 - Conversion Rate Optimization
 - AI
 - Merchandising
-apis: []
+- MCP
+- Agentic Commerce
+- Session Replay
+- Experimentation
+- Attribution
+apis:
+- name: FERMAT Platform MCP Server
+  description: 'Remote Model Context Protocol server exposing 64 read-only tools over FERMAT commerce
+    data — product catalog, funnel analytics, ad performance, destination insights, experiments, session
+    and behavioral data, anomaly and friction detection, branding, offers, bundles, product pages, and
+    Pierre, FERMAT''s natural-language BI agent. Streamable HTTP (POST only), protected by OAuth 2.1 authorization-code
+    + PKCE with dynamic client registration. Customer-only: an anonymous tools/list returns JSON-RPC -32001.
+    External access is read-only; the provider states write capability is coming.'
+  humanURL: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+  baseURL: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  tags:
+  - MCP
+  - Commerce
+  - Analytics
+  - AI
+  - Agentic Commerce
+  properties:
+  - type: MCPServer
+    url: mcp/fermat-mcp.yml
+  - type: Documentation
+    url: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+  - type: APIReference
+    url: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  - type: Authentication
+    url: authentication/fermat-authentication.yml
+  - type: ErrorCatalog
+    url: errors/fermat-problem-types.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+- name: FERMAT Pixel v2
+  description: First-party browser ES module (claire.mjs) a brand embeds to emit commerce telemetry to
+    FERMAT. Exposes a window.fermat command queue with init, track and status methods, and six documented
+    events — page_view, view_product, add_to_cart, remove_from_cart, begin_checkout and purchase — each
+    with a published field schema. Lazily loads a session recorder for replay, heatmaps and scroll-depth
+    analysis when recording is enabled in the pixel config. Installed via a direct script tag or Google
+    Tag Manager; Shopify stores use a separate native path.
+  humanURL: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  baseURL: https://e.clairedefermat.com
+  tags:
+  - Ecommerce
+  - Analytics
+  - Session Replay
+  - Attribution
+  - Personalization
+  properties:
+  - type: AsyncAPI
+    url: asyncapi/fermat-pixel-asyncapi.yml
+  - type: Documentation
+    url: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  - type: GettingStarted
+    url: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  - type: Components
+    url: components/fermat-components.yml
+  - type: SDKs
+    url: packages/fermat-packages.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -81,8 +142,45 @@ common:
   url: conformance/fermat-conformance.yml
 - type: DomainSecurity
   url: security/fermat-domain-security.yml
+- type: Documentation
+  url: https://help.fermatcommerce.com/en/
+- type: APIReference
+  name: FERMAT Platform MCP server — published 64-tool reference
+  url: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+- type: GettingStarted
+  url: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+- type: MCPServer
+  url: mcp/fermat-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: WellKnown
+  url: well-known/fermat-well-known.yml
+- type: Authentication
+  url: authentication/fermat-authentication.yml
+- type: ErrorCatalog
+  url: errors/fermat-problem-types.yml
+- type: Conventions
+  url: conventions/fermat-conventions.yml
+- type: Lifecycle
+  url: lifecycle/fermat-lifecycle.yml
+- type: Plans
+  url: plans/fermat-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/fermat-rate-limits.yml
+- type: Packages
+  url: packages/fermat-packages.yml
+- type: SDKs
+  url: packages/fermat-packages.yml
+- type: Components
+  url: components/fermat-components.yml
+- type: DataModel
+  url: data-model/fermat-data-model.yml
+- type: AsyncAPI
+  url: asyncapi/fermat-pixel-asyncapi.yml
+- type: LLMsTxt
+  url: llms/fermat-llms.txt
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 20
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
