@@ -1,0 +1,54 @@
+generated: '2026-08-13'
+method: searched
+source: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  + https://help.fermatcommerce.com/en/collections/19679634-fermat-pixel + claire.mjs bundle analysis
+note: 'FERMAT''s developer-facing surface is overwhelmingly client-side: a brand embeds a script and FERMAT
+  renders storefront experiences. These are the embeddable/client-side components, distinct from SDKs.'
+families:
+- family: FERMAT Pixel v2
+  loader: https://static.clairedefermat.com/pixel/v2/claire.mjs
+  global: 'window.fermat (command-queue: window.fermat.q)'
+  install_paths:
+  - Direct <script> in <head>
+  - Google Tag Manager Custom HTML tag
+  - Shopify native install (separate path; manual install explicitly discouraged for Shopify stores)
+  config:
+    id: per-brand Pixel ID issued by a FERMAT representative
+    recording:
+      enabled: boolean
+      samplingRate: '0..1 (guide example: 0.1 = 10% of sessions)'
+  methods:
+  - init
+  - track
+  - status
+  verification: 'window.fermat({ method: ''status'' }) returns { initialized: true, version, recording,
+    eventCount, ... }'
+  ingest: https://e.clairedefermat.com
+  config_endpoint: GET https://e.clairedefermat.com/pixel-config/v2?source_id=<pixel-id> (anonymous; returns
+    {"success":false,"error":"Pixel configuration not found"} for an unknown id)
+- family: Session Recorder
+  loader: lazy-loaded by claire.mjs only when recording is enabled in the pixel config
+  ingest: https://sr.clairedefermat.com
+  transport: POST with compressed payload built in a Web Worker; navigator.sendBeacon fallback on unload
+  capabilities:
+  - session replay
+  - heatmaps
+  - scroll-depth analysis
+  - rage/dead-click detection
+  note: Sampling is controlled server-side through the pixel config plus the samplingRate set at init.
+- family: AI Shopping Assistant
+  surface: https://shopping-assistant.fermatcommerce.com
+  embed: Launched by the pixel with query parameters org, surface=brand-site, and an actions payload;
+    open/mode state persisted in sessionStorage keys fermat_sa_open and fermat_sa_mode
+  note: Served as a single-page app (Cloudflare Pages). Every path returns the same 200 HTML shell, so
+    it exposes no machine-readable contract.
+storage_keys:
+- fermat_session
+- fermat_visitor_id
+- fermat_src
+- fermat_storefront
+- fermat_sa_open
+- fermat_sa_mode
+storefront_domain:
+  url: https://www.shopfermat.com/
+  note: FERMAT-operated storefront/funnel domain referenced from the marketing site.

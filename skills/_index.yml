@@ -1,0 +1,54 @@
+generated: '2026-08-13'
+method: generated
+source: mcp/fermat-mcp.yml (64 published MCP tools) + https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+note: FERMAT publishes no OpenAPI, so these skills are grounded in the 64 REAL MCP tool names published
+  on the provider's own install page and the pixel's three documented methods. Every operation referenced
+  was checked against that manifest; none is invented. FERMAT publishes no skills or AGENTS.md of its
+  own.
+skills:
+- name: fermat-ad-performance-review
+  file: skills/fermat-ad-performance-review.md
+  api: FERMAT Platform MCP
+  surface: mcp
+  access: customer-only (OAuth)
+  operations:
+  - get_ad_insights
+  - get_ad_creatives
+  - get_destination_insights
+  - get_destination_details
+  - ask_pierre
+- name: fermat-funnel-and-experiment-readout
+  file: skills/fermat-funnel-and-experiment-readout.md
+  api: FERMAT Platform MCP
+  surface: mcp
+  access: customer-only (OAuth)
+  operations:
+  - list_funnels
+  - get_funnel_metrics
+  - list_experiments
+  - get_experiment_results
+  - list_active_dpp_experiments
+  - list_pdp_versions
+- name: fermat-friction-and-anomaly-triage
+  file: skills/fermat-friction-and-anomaly-triage.md
+  api: FERMAT Platform MCP
+  surface: mcp
+  access: customer-only (OAuth)
+  operations:
+  - get_anomalies
+  - get_anomaly_report
+  - get_friction_point_report
+  - get_heatmap_click_analysis
+  - get_heatmap_scroll_analysis
+  - get_session_checkout_analysis
+  - get_session_behavioral_insights
+  - get_session_funnel_journey
+- name: fermat-pixel-install-and-verify
+  file: skills/fermat-pixel-install-and-verify.md
+  api: FERMAT Pixel v2
+  surface: browser
+  access: customer-only (Pixel ID issued by FERMAT)
+  operations:
+  - init
+  - track
+  - status

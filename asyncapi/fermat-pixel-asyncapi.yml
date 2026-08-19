@@ -1,0 +1,180 @@
+# generated: '2026-08-13'
+# method: derived
+# source: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+# NOTE: FERMAT publishes no AsyncAPI of its own. This document is API Evangelist's faithful
+# derivation of the SIX events and their field tables that FERMAT publishes verbatim in the
+# FERMAT Pixel v2 installation guide, plus the ingest host read from the shipped claire.mjs
+# bundle. It describes a CLIENT-TELEMETRY INGEST channel (browser -> FERMAT), not
+# provider-emitted webhooks; FERMAT documents no webhook/callback surface, so no Webhooks
+# pointer is claimed. Field requiredness below is copied from the provider's own table.
+asyncapi: 3.0.0
+info:
+  title: FERMAT Pixel v2 Event Ingest
+  version: '2.0.0'
+  description: >-
+    Browser-to-FERMAT commerce telemetry. A brand installs the FERMAT Pixel v2 and calls
+    window.fermat({ method: "track", eventName, properties }) for each of the six documented
+    commerce events. Events are POSTed to the FERMAT event collector, with navigator.sendBeacon
+    as the unload-time fallback.
+  contact:
+    name: FERMAT
+    url: https://www.fermatcommerce.com/
+  externalDocs:
+    url: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+servers:
+  collector:
+    host: e.clairedefermat.com
+    protocol: https
+    description: FERMAT pixel event collector. POST only; GET returns 405 "Method not allowed".
+  sessionRecording:
+    host: sr.clairedefermat.com
+    protocol: https
+    description: >-
+      Session-recording collector. Loaded only when recording is enabled in the pixel config.
+      Payload shape is not published and is deliberately NOT modelled here.
+channels:
+  pixelEvents:
+    address: /
+    servers:
+      - $ref: '#/servers/collector'
+    title: Pixel event stream
+    description: >-
+      All six documented commerce events are published to this single channel. Authentication is
+      the public per-brand Pixel ID supplied at init; there is no secret credential.
+    messages:
+      pageView:
+        $ref: '#/components/messages/pageView'
+      viewProduct:
+        $ref: '#/components/messages/viewProduct'
+      addToCart:
+        $ref: '#/components/messages/addToCart'
+      removeFromCart:
+        $ref: '#/components/messages/removeFromCart'
+      beginCheckout:
+        $ref: '#/components/messages/beginCheckout'
+      purchase:
+        $ref: '#/components/messages/purchase'
+operations:
+  sendPixelEvent:
+    action: send
+    channel:
+      $ref: '#/channels/pixelEvents'
+    title: Track a commerce event
+    description: 'Invoked from the storefront via window.fermat({ method: "track", ... }).'
+    messages:
+      - $ref: '#/channels/pixelEvents/messages/pageView'
+      - $ref: '#/channels/pixelEvents/messages/viewProduct'
+      - $ref: '#/channels/pixelEvents/messages/addToCart'
+      - $ref: '#/channels/pixelEvents/messages/removeFromCart'
+      - $ref: '#/channels/pixelEvents/messages/beginCheckout'
+      - $ref: '#/channels/pixelEvents/messages/purchase'
+components:
+  schemas:
+    product:
+      type: object
+      required: [product_id, product_name, price, currency]
+      properties:
+        product_id: { type: string, description: 'Unique product identifier'}
+        product_name: { type: string, description: 'Product display name'}
+        price: { type: number, description: 'Product price'}
+        currency: { type: string, description: 'Currency code (e.g. USD)'}
+        quantity: { type: number, description: 'Required for add_to_cart and remove_from_cart'}
+        variant_id: { type: string, description: 'Variant identifier (optional)'}
+        sku: { type: string, description: 'Product SKU (optional)'}
+        variant_name: { type: string, description: 'Variant display name (optional)'}
+    lineItem:
+      allOf:
+        - $ref: '#/components/schemas/product'
+        - type: object
+          required: [quantity]
+    orderTotals:
+      type: object
+      required: [total_price, currency, items]
+      properties:
+        total_price: { type: number, description: 'Order total'}
+        currency: { type: string }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/lineItem' }
+        total_tax: { type: number, description: 'optional'}
+        total_shipping: { type: number, description: 'optional'}
+        total_discount: { type: number, description: 'optional'}
+  messages:
+    pageView:
+      name: page_view
+      title: Page view
+      summary: Fired on every page load. SPAs must re-fire on route change.
+      payload:
+        type: object
+        required: [eventName]
+        properties:
+          eventName: { type: string, const: page_view }
+          properties: { type: object }
+    viewProduct:
+      name: view_product
+      title: View product
+      summary: Fired when a user views a product detail page.
+      payload:
+        type: object
+        required: [eventName, properties]
+        properties:
+          eventName: { type: string, const: view_product }
+          properties:
+            type: object
+            required: [product]
+            properties:
+              product: { $ref: '#/components/schemas/product' }
+    addToCart:
+      name: add_to_cart
+      title: Add to cart
+      summary: Fired when a user adds a product to their cart. Quantity required.
+      payload:
+        type: object
+        required: [eventName, properties]
+        properties:
+          eventName: { type: string, const: add_to_cart }
+          properties:
+            type: object
+            required: [product]
+            properties:
+              product: { $ref: '#/components/schemas/lineItem' }
+    removeFromCart:
+      name: remove_from_cart
+      title: Remove from cart
+      summary: Fired when a user removes a product from their cart. Quantity required.
+      payload:
+        type: object
+        required: [eventName, properties]
+        properties:
+          eventName: { type: string, const: remove_from_cart }
+          properties:
+            type: object
+            required: [product]
+            properties:
+              product: { $ref: '#/components/schemas/lineItem' }
+    beginCheckout:
+      name: begin_checkout
+      title: Begin checkout
+      summary: Fired when the user starts the checkout process.
+      payload:
+        type: object
+        required: [eventName, properties]
+        properties:
+          eventName: { type: string, const: begin_checkout }
+          properties: { $ref: '#/components/schemas/orderTotals' }
+    purchase:
+      name: purchase
+      title: Purchase
+      summary: Fired when the purchase completes (order confirmation / thank-you page).
+      payload:
+        type: object
+        required: [eventName, properties]
+        properties:
+          eventName: { type: string, const: purchase }
+          properties:
+            allOf:
+              - $ref: '#/components/schemas/orderTotals'
+              - type: object
+                required: [transaction_id]
+                properties:
+                  transaction_id: { type: string, description: 'Unique order/transaction ID'}

@@ -1,0 +1,21 @@
+generated: '2026-08-13'
+method: probed
+source: https://www.fermatcommerce.com/pricing (HTTP 301 to site root), https://www.fermatcommerce.com/enterprise
+  (HTTP 301 to site root), https://www.fermatcommerce.com/book-a-call (HTTP 200)
+plan_count: 0
+pricing_model: contact-sales
+note: FERMAT publishes no plans, tiers, list prices or usage quotas. /pricing and /enterprise both 301-redirect
+  to the marketing site root — there is no pricing page. The only commercial entry point is a 'Book a
+  call' form. MCP and Pixel access are bundled with a FERMAT platform contract, not sold or metered separately;
+  the MCP FAQ directs prospects without access to their FERMAT account team.
+plans: []
+evidence:
+- url: https://www.fermatcommerce.com/pricing
+  status: 301
+  note: redirects to https://www.fermatcommerce.com/
+- url: https://www.fermatcommerce.com/enterprise
+  status: 301
+  note: redirects to https://www.fermatcommerce.com/
+- url: https://www.fermatcommerce.com/book-a-call
+  status: 200
+  note: sales contact form — the only commercial path

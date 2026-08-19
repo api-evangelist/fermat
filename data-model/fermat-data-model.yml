@@ -1,0 +1,105 @@
+generated: '2026-08-13'
+method: derived
+source: mcp/fermat-mcp.yml (64 published tool names and descriptions) + https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+note: Derived strictly from the entities named in FERMAT's own published MCP tool names/descriptions and
+  the documented pixel event payloads. No OpenAPI exists, so no $ref graph was available; only relationships
+  stated outright in a tool description are recorded. Cardinalities are not published and are therefore
+  omitted rather than guessed.
+entities:
+- name: organization
+  aka:
+  - org
+  - shop
+  evidence: search_organizations, get_org_branding, get_offers_for_shop, get_shop_layout; shop_id appears
+    in AIS funnel layouts
+- name: product
+  evidence: search_products, search_products_es, get_product_info, rank_products, list_product_media
+  attributes_noted:
+  - name
+  - handle
+  - price
+  - image
+  - brand
+  - category
+  - attributes
+- name: product_variant
+  evidence: get_product_variant_metrics; pixel payloads carry variant_id, sku, variant_name
+- name: product_group
+  evidence: list_product_groups, list_product_group_members, get_product_groups_for_product
+- name: virtual_product
+  evidence: get_virtual_product, list_virtual_products
+- name: bundle
+  evidence: get_bundle, list_bundles, get_bundle_layout
+- name: offer
+  evidence: list_offers, get_offers_for_shop — discount offers, tiers, code configurations
+- name: funnel
+  evidence: list_funnels, get_funnel_metrics, get_product_funnel_layout, list_product_funnel_templates,
+    get_ais_pending_funnel_layouts
+- name: layout
+  aka:
+  - pdp_version
+  - shop_layout
+  evidence: get_layout_version, get_layout_history, get_layout_fragments, list_pdp_versions, get_shop_layout
+- name: module
+  evidence: list_modules, get_custom_module, list_custom_modules — custom modules carry a generated HTML/CSS/JS
+    bundle, config schema and default config
+- name: experiment
+  evidence: list_experiments, get_experiment_results, list_active_dpp_experiments
+- name: session
+  evidence: get_session_funnel_journey, get_session_behavioral_insights, get_session_checkout_analysis,
+    get_external_session_journey, get_external_session_behavioral_insights
+- name: destination
+  evidence: list_funnels/get_destination_details, get_destination_insights — per-channel ROAS, revenue,
+    attribution
+- name: ad
+  evidence: get_ad_creatives, get_ad_insights — spend, clicks, ROAS, CPA across Meta, TikTok, Google
+- name: anomaly
+  evidence: get_anomalies, get_anomaly_report
+- name: friction_point
+  evidence: get_friction_point_report
+- name: forge_run
+  evidence: list_forge_templates, list_forge_artifacts, get_forge_run_status, get_forge_run_outputs
+- name: brand_guidelines
+  evidence: get_ais_brand_guidelines, get_brand_voice, get_org_branding — colors, fonts, button styles,
+    brand voice, knowledge-base documents
+relationships:
+- from: product_group
+  to: product
+  type: has_many
+  via: list_product_group_members
+  evidence: 'tool description: members of a product group'
+- from: product
+  to: product_group
+  type: has_many
+  via: get_product_groups_for_product
+  evidence: 'tool description: groups containing a product'
+- from: organization
+  to: offer
+  type: has_many
+  via: get_offers_for_shop
+  evidence: tool description
+- from: organization
+  to: brand_guidelines
+  type: has_one
+  via: get_ais_brand_guidelines / get_org_branding
+  evidence: 'tool description: brand guideline content for an organization'
+- from: funnel
+  to: layout
+  type: has_one
+  via: get_product_funnel_layout
+  evidence: 'tool description: full layout JSON for each funnel'
+- from: layout
+  to: module
+  type: has_many
+  via: get_layout_fragments / list_modules
+  evidence: 'tool description: all modules and their content/copy'
+- from: bundle
+  to: layout
+  type: has_one
+  via: get_bundle_layout
+  evidence: tool description
+- from: forge_run
+  to: forge_artifact
+  type: has_many
+  via: list_forge_artifacts / get_forge_run_outputs
+  evidence: tool description

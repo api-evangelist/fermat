@@ -1,28 +1,80 @@
-generated: '2026-07-19'
+generated: '2026-08-13'
 method: searched
-source: https://www.fermatcommerce.com/
-notes: >-
-  Fermat (FERMÀT) is a SaaS commerce-experience platform, not a spec-bearing
-  public API provider. No OpenAPI/AsyncAPI is published, so cross-cutting API
-  standards (oauth2, rfc9457, pagination, idempotency) cannot be derived. The
-  compliance posture below is published verbatim on the marketing site and is a
-  genuine, audited program.
+source: https://www.fermatcommerce.com/ + live probes of https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  (2026-08-13)
+notes: FERMAT publishes no OpenAPI or AsyncAPI. It DOES ship a live, OAuth-protected remote MCP server,
+  so the API-side standards below are asserted from live anonymous probes of that endpoint and its RFC
+  8414 / RFC 9728 metadata documents rather than from a spec. The compliance program is published verbatim
+  on the marketing site and is a genuine, audited program.
 standards:
-  - id: soc2-type-ii
-    conforms: true
-    evidence: '"SOC 2 Type II — Audited annually" stated on fermatcommerce.com'
-  - id: gdpr
-    conforms: true
-    evidence: '"GDPR — EU data compliance" stated on fermatcommerce.com; DSAR request portal published'
-  - id: ccpa
-    conforms: true
-    evidence: '"CCPA — California consumer privacy" stated on fermatcommerce.com'
-  - id: iso-27001
-    conforms: false
-  - id: pci-dss
-    conforms: false
-  - id: hipaa
-    conforms: false
+- id: soc2-type-ii
+  conforms: true
+  evidence: '"SOC 2 Type II — Audited annually" stated on fermatcommerce.com'
+- id: gdpr
+  conforms: true
+  evidence: '"GDPR — EU data compliance" stated on fermatcommerce.com; DSAR request portal published'
+- id: ccpa
+  conforms: true
+  evidence: '"CCPA — California consumer privacy" stated on fermatcommerce.com'
+- id: iso-27001
+  conforms: false
+- id: pci-dss
+  conforms: false
+- id: hipaa
+  conforms: false
+- id: oauth2
+  conforms: true
+  evidence: RFC 8414 authorization-server metadata served at https://mcp.fermatcommerce.com/.well-known/oauth-authorization-server/mcp/fermat-mcp
+    declaring authorization_code + refresh_token grants (HTTP 200, probed 2026-08-13)
+- id: oauth2-pkce
+  conforms: true
+  evidence: 'code_challenge_methods_supported: ["S256"] in the authorization-server metadata; provider
+    documents "Auth0 PKCE OAuth"'
+- id: rfc8414
+  conforms: true
+  evidence: OAuth 2.0 Authorization Server Metadata document served at the path-suffixed well-known location
+    (HTTP 200)
+- id: rfc9728
+  conforms: true
+  evidence: OAuth 2.0 Protected Resource Metadata served at /.well-known/oauth-protected-resource/mcp/fermat-mcp,
+    and advertised in the 401 WWW-Authenticate challenge via resource_metadata (HTTP 200)
+- id: rfc7591
+  conforms: true
+  evidence: registration_endpoint present in the authorization-server metadata — OAuth 2.0 Dynamic Client
+    Registration supported
+- id: mcp
+  conforms: true
+  evidence: Live Streamable HTTP MCP server at https://mcp.fermatcommerce.com/mcp/fermat-mcp; 64 tools
+    published on the provider install page; MCP-Protocol-Version header accepted
+- id: jsonrpc-2.0
+  conforms: true
+  evidence: All MCP responses carry a JSON-RPC 2.0 envelope; observed error codes -32000/-32001/-32002
+- id: rfc9457
+  conforms: false
+  evidence: No application/problem+json anywhere; MCP errors use the JSON-RPC 2.0 error object and the
+    pixel-config endpoint uses {success,error}
+- id: openapi
+  conforms: false
+  evidence: No OpenAPI/Swagger document found on any FERMAT-controlled host (docs, app, api and MCP hosts
+    all probed 2026-08-13)
+- id: asyncapi
+  conforms: false
+  evidence: No AsyncAPI published; the document in asyncapi/ is an API Evangelist derivation of the published
+    pixel event schema
+- id: a2a
+  conforms: false
+  evidence: No agent card at /.well-known/agent-card.json or /.well-known/agent.json on any host; SPA
+    hosts return an HTML shell, not a card
+- id: rfc9116
+  conforms: false
+  evidence: 'No FERMAT security.txt. The only 200 is Intercom''s own document on the Intercom-hosted help
+    center (Canonical: app.intercom.com)'
+- id: rfc8594
+  conforms: false
+  evidence: No Sunset or Deprecation headers observed; no deprecation policy published
+- id: rfc9110-ratelimit
+  conforms: false
+  evidence: No RateLimit-* / X-RateLimit-* / Retry-After headers on any probed response
 compliance:
   program: SOC 2 Type II (audited annually), GDPR, CCPA
   subprocessor_list: https://www.fermatcommerce.com/subprocessor-list

@@ -1,0 +1,463 @@
+generated: '2026-08-13'
+method: probed
+source: 'https://mcp.fermatcommerce.com/mcp/fermat-mcp (public install page, Accept: text/html) + https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools'
+name: Fermat Platform (External)
+status: live
+deployment:
+  mode: remote
+  endpoint: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  auth: oauth
+  verified: probed
+transport: streamable-http (POST); GET returns 405 with a JSON-RPC advisory that this server is POST-only
+hosting: Hosted on Speakeasy Gram (mcp.fermatcommerce.com CNAMEs to cname.prod.getgram.ai) but served
+  from FERMAT's own domain and documented in FERMAT's own help center.
+access:
+  model: customer-only
+  note: Requires an active FERMAT platform account; tools/list returns JSON-RPC -32001 'expired or invalid
+    access token' anonymously. The tool NAMES and DESCRIPTIONS below are published anonymously on the
+    provider's own install page; input schemas require an authenticated tools/list.
+  read_only: true
+  read_only_source: 'Provider FAQ: ''External access is currently read-only. Write capabilities are coming
+    soon.'''
+authentication:
+  type: oauth2
+  flow: authorization_code + PKCE (S256)
+  identity_provider: 'Auth0 (per provider documentation: "Auth0 PKCE OAuth — secure, scoped per-brand")'
+  dynamic_client_registration: true
+  authorization_server_metadata: well-known/fermat-oauth-authorization-server.json
+  protected_resource_metadata: well-known/fermat-oauth-protected-resource.json
+  scopes_published: false
+  scopes_note: The RFC 8414 metadata document omits scopes_supported; the provider describes access as
+    'scoped per-brand' in prose only. No scope registry is published, so no scopes/ artifact is emitted.
+pass_through_headers:
+  note: The published install snippets require six caller-supplied credential headers, indicating the
+    server proxies third-party systems on the caller's behalf. Values are supplied by the operator; none
+    are published.
+  headers:
+  - Mcp-Elmo-Api-Key
+  - Mcp-Reddit-Client-Id
+  - Mcp-Reddit-Client-Secret
+  - Mcp-Reddit-Password
+  - Mcp-Reddit-Username
+  - Mcp-Search-Api-Url
+clients_documented:
+- Claude Desktop
+- Claude.ai
+- Claude Code
+- ChatGPT (Plus+)
+- Cursor
+- VS Code
+- Gemini CLI
+- Codex CLI
+- opencode
+tool_count: 64
+tool_schemas_available: false
+tool_schema_note: Input schemas are not exposed anonymously; they require an authenticated tools/list
+  against the live endpoint.
+modules_documented:
+- Product Catalog
+- Funnel Analytics
+- Ad Performance
+- Destination Insights
+- Experiments
+- Session & Behavioral
+- Anomaly & Friction
+- Branding
+- Offers
+- Bundles
+- Product Pages
+- Pierre AI
+tools:
+- name: rank_products
+  category: product-catalog
+  description: "Rank products by how well they match user preferences or quiz answers. Uses deterministic\
+    \ attribute matching — no LLM call, runs in <1ms.\n\nPass products (from search_products_es with include_attrs=true)\
+    \ and a preferences object mapping attribute keys to desired values. Returns products sorted by match\
+    \ score with a _score field added.\n\nExample preferences for a bike quiz:\n  {\"terrain\": \"mountain\"\
+    , \"skill_level\": \"intermediate\", \"activity\": \"trail riding\"}\n\nExample preferences for waterproof\
+    \ pants:\n  {\"material\": \"GORE-TEX\", \"activity\": \"skiing\", \"weight_class\": \"lightweight\"\
+    }"
+- name: search_products_es
+  category: product-catalog
+  description: 'Search products using Elasticsearch with full-text + semantic search, category filtering,
+    attribute facets, and price ranges. Much faster and more relevant than the Hasura-based search_products.
+    Returns product name, handle, price, image, brand, and optionally attributes.
+
+
+    Filter DSL examples:
+
+    - "category:Bikes>Mountain" — category prefix
+
+    - "price:<=500" — price ceiling
+
+    - "price:>=100,price:<=500" — price range
+
+    - "brand:Cannondale" — brand filter
+
+    - "category:Bikes,price:>100,brand:Trek" — combined
+
+
+    Set include_attrs=true to get attribute facets for product intelligence scoring.'
+- name: get_ais_pending_funnel_layouts
+  category: ai-search
+  description: Get AIS (AI Search) funnel layouts for an organization, filtered by review status. Returns
+    the full layout JSON (all modules and their content/copy) for each matching funnel. Defaults to pending
+    funnels. Use this to load funnel content for compliance validation against brand guidelines. Each
+    funnel includes shop_id, tile_id, review metadata, and the complete module layout.
+- name: get_ais_brand_guidelines
+  category: ai-search
+  description: 'Get all brand guideline content for an organization: Knowledge Base documents (pre-converted
+    markdown from GCS, preserving tables and document structure), Pierre brand voice, and Pierre extra
+    context. Returns the full text of every KB document grouped by source file, plus brand voice and extra
+    context fields. Use this to load the complete set of brand rules, compliance guidelines, trademark
+    requirements, and tone directives before validating AIS funnel copy.'
+- name: get_custom_module
+  category: pages-layouts
+  description: Get a custom module's full details including the generated HTML/CSS/JS bundle code, config
+    schema, and default config. Look up by module_name (e.g. 'custom/bike-finder-quiz') or by id (UUID).
+    The generated_component field contains the full bundle source.
+- name: list_custom_modules
+  category: pages-layouts
+  description: 'List custom modules in an organization''s module library. Returns module name, display
+    name, description, status, and timestamps. Use get_custom_module to fetch the full bundle code. Supports
+    optional name search and pagination.
+
+
+    By default only lists `ready` modules. Pass `include_non_ready: true` to also include in-flight (`generating`)
+    and failed (`failed`) generation jobs.'
+- name: list_forge_artifacts
+  category: forge
+  description: List artifacts (documents, images, JSON files) produced by a Forge workflow run. Returns
+    each artifact's name, type, content type, storage URL, and review status. Use this to find downloadable
+    outputs after a run completes.
+- name: get_forge_run_outputs
+  category: forge
+  description: Fetch the outputs of a completed Forge workflow run, including the final run output and
+    per-node execution details. Each node output includes the node_id, node_type, output data, execution
+    order, duration, and status. Use this after a run completes to inspect what each workflow step produced.
+- name: get_forge_run_status
+  category: forge
+  description: Check the status of a Forge workflow run by its run_id. Returns the current status (pending,
+    running, completed, failed), the current node being executed, any error message, and timing information.
+    Use this to poll a run after starting it with start_forge_run.
+- name: list_forge_templates
+  category: forge
+  description: List published Forge workflow templates for an organization. Returns each template's name,
+    slug, description, and input_schema so you know what inputs are required to start a run. Use the input_schema
+    to understand the expected shape of the `input` parameter for start_forge_run.
+- name: list_filter_settings
+  category: other
+  description: List product attribute filters for an organization. By default returns a summary of all
+    attribute keys with value counts and their storefront sort position (display_order). Pass key_name
+    to drill into a specific key and see all its values with their visibility and display name settings.
+- name: get_bundle
+  category: bundles
+  description: Get a bundle's full details including products, images, layout, linked tiles, and BYOB
+    config (if applicable). Use list_bundles first to find bundle IDs.
+- name: get_virtual_product
+  category: product-groups
+  description: Get a virtual product's full configuration including all member products with their variants,
+    images, option value overrides, and clustering settings.
+- name: list_virtual_products
+  category: product-groups
+  description: 'List all combined/virtual products for an organization. Virtual products merge multiple
+    real products into a single product page with shared variant selection. Returns each VP''s config:
+    key product, member products, option overrides, and clustering mode.'
+- name: list_pdp_versions
+  category: pages-layouts
+  description: List all PDP versions for a root product. Returns each version's ID, name, handle, and
+    whether it is the core or favorite (default) version. Also shows whether each version has a custom
+    PDP layout. Use search_products first to find the root_product_id.
+- name: get_offers_for_shop
+  category: offers
+  description: Get all offers configured on a shop (via its default tile). Returns the shop name, tile
+    info, and all offer configs including discount types, tiers with discount codes, and NoOp status.
+    Accepts a shop ID (UUID from the dashboard URL or list_funnels output).
+- name: list_offers
+  category: offers
+  description: List all offers for an organization. Returns offer details including discount type (order,
+    product, shipping), threshold type, tiers with discount codes/values, and which tiles use each offer.
+    Useful for debugging discount code issues and comparing offer configs across funnels. Supports filtering
+    by active status and search by name.
+- name: list_recommendation_exclusions
+  category: other
+  description: List products excluded from recommendation algorithms for an organization. Returns product
+    names, handles, categories, who excluded them, and when. Set summary_only=true to get just the total
+    count and breakdown by category without individual product details — useful for orgs with many exclusions.
+- name: get_product_funnel_layout
+  category: funnel
+  description: Get a product funnel layout by ID. Returns the full record including both lander_layout
+    and pdp_layout. Use this as a starting point before creating a product funnel layout preview session.
+- name: list_product_media
+  category: product-catalog
+  description: List media files associated with products for an organization. Shows images from Shopify
+    product catalog, user uploads, and other sources. Optionally filter by product_id to get media for
+    a specific product. Each result includes the media URL, source platform, and associated product ID.
+- name: list_org_media
+  category: other
+  description: List media files from an organization's media library. Returns image and video URLs from
+    the org's uploaded assets (excludes fonts and auto-pulled Facebook media). Use this to find images
+    for swapping into module layouts. Each result includes the full CDN URL ready to use in module fields.
+- name: get_shop_layout
+  category: pages-layouts
+  description: Get the current (latest version) layout JSON for a tile/shop. Returns the full layout structure
+    including all modules and their configuration. Use this as a starting point before creating a shop
+    layout preview session. The response includes `updated_at`, an etag-style token. To safely persist
+    edits with save_shop_layout you MUST pass this value back as `expected_updated_at` so concurrent edits
+    made elsewhere (e.g. via 'Edit With AI' in the dashboard) are not silently overwritten.
+- name: list_modules
+  category: pages-layouts
+  description: List all available Fermat modules from the module registry, grouped by category. Each module
+    includes its moduleName, displayName, category, and description. Use the optional 'category' filter
+    to narrow results (e.g. 'Commerce', 'Content').
+- name: list_product_funnel_templates
+  category: funnel
+  description: List available product funnel templates (layouts) for an organization. Returns each template's
+    ID, name, and timestamps. Use this to discover valid product_funnel_layout_id values when creating
+    a product group. Supports pagination via limit/offset.
+- name: list_product_groups
+  category: product-groups
+  description: List product groups for a product funnel. Returns each group's ID, name, description, precedence
+    order, associated funnel and layout names, member count, and timestamps. Supports pagination via limit/offset.
+- name: get_product_info
+  category: product-catalog
+  description: Get comprehensive information about a product. Returns the full product model including
+    all variants (with pricing), images, PDP layouts (both authored and resolved), product versions, layout
+    fragment keys, and product group membership. Look up by root_product_id, or by org_id + handle.
+- name: get_batch_fragment_status
+  category: pages-layouts
+  description: Lightweight status check for batch fragment generation. Returns aggregate counts (total_members,
+    with_fragment, without_fragment, disabled_products) and a per-member breakdown (root_product_id, name,
+    external_id, has_fragment, externally_enabled). Use before batch generation as a dry run and after
+    generation to verify results.
+- name: list_product_group_members
+  category: product-groups
+  description: 'List all products in a product group with enriched data. Returns per-member: root_product_id,
+    core_product_id, external_id (SKU), name, handle, description, image_url, externally_enabled. Optionally
+    include fragment_key to check existing fragment status per product ({exists, updated_at}), and include_tct_keys
+    to batch-fetch tile config tag values ({available, value} per key). Supports pagination via limit/offset.
+    Batch-fetches in 1-3 Hasura queries instead of N individual calls.'
+- name: get_product_groups_for_product
+  category: product-groups
+  description: Given a root_product_id, discover which product group(s) the product belongs to. Returns
+    an array of groups with ID, name, funnel name/slug, layout name, precedence order, and member count.
+    An empty array means the product is not in any product group. Use this as the first step before batch-generating
+    layout fragments.
+- name: get_brand_voice
+  category: branding
+  description: Get brand voice and extra context for an organization. Returns the brand's personality
+    traits and additional context that should guide tone, style, and content generation. Use this to load
+    brand voice into your context before generating copy, product descriptions, or any brand-specific
+    content.
+- name: get_org_branding
+  category: branding
+  description: Get branding settings for an organization — colors (primary, secondary, accent, button
+    colors), fonts (primary, secondary, up to 3 custom fonts with variants), button styles (shape, padding,
+    font config, custom CTA text), logo, and favicon. Use this before editing layouts to ensure modules
+    use the correct brand colors, fonts, and button styling.
+- name: get_layout_fragments
+  category: pages-layouts
+  description: Get layout fragments for a root product. Layout fragments are reusable pieces of layout
+    configuration stored per product. Filter by fragment_key to get a specific fragment.
+- name: get_bundle_layout
+  category: bundles
+  description: Get the current BDP (Bundle Detail Page) layout for a bundle. Returns the bundle's layout
+    JSON along with bundle metadata (name, type, org_id). Use this to read existing bundle layouts before
+    making edits.
+- name: list_bundles
+  category: bundles
+  description: List all bundles for an organization, including their products and pricing. Returns bundle
+    name, type, discount, and included products with quantities.
+- name: get_layout_version
+  category: pages-layouts
+  description: Get the full layout JSON for a specific version of a tile. Returns the complete layout
+    structure including all modules and their configuration. Requires tile_id and version_number. Get
+    version numbers from get_layout_history.
+- name: get_layout_history
+  category: pages-layouts
+  description: Get the version history of a tile's layout, showing when changes were made and by whom.
+    Use this to understand how a funnel's design has evolved. Requires tile_id. Returns version_number,
+    created_at, created_by, and message for each version.
+- name: search_products
+  category: product-catalog
+  description: Search products in the catalog. Returns lightweight results (id, external_id, name, handle,
+    externally_enabled, available_variants count). Use get_product_info with a root_product_id to fetch
+    full details (images, variants, categories, layouts) for specific products. Can filter by name, SKU
+    (external_id on root_products), category (matched as a prefix against pipe-delimited normalized_path
+    — e.g. passing 'Accessories' finds products under 'Accessories', 'Accessories|Books', etc.), and whether
+    they're externally enabled (live on the store). Defaults to only returning in-stock products (has
+    at least one available variant); set in_stock=false to include out-of-stock.
+- name: search_organizations
+  category: other
+  description: Search for organizations (brands) by name. Returns the org ID needed by all other tools,
+    plus metadata like website, ecommerce platform, vertical, and account type. Use 'search' for name
+    filtering. Supports pagination.
+- name: get_friction_point_report
+  category: anomaly-friction
+  description: 'Generate a friction point detection report for a brand''s website. Fetches all behavioral
+    anomalies (rage clicks, dead clicks, confusion loops, u-turns, excessive scrolling) and generates
+    a detailed AI report for each one with session recording links, root cause analysis, and recommendations.
+    Combines get_anomalies + get_anomaly_report into one call. Supports all anomaly types: behavioral
+    (rage clicks, dead clicks, confusion loops), traffic, conversion, and search. Defaults to behavioral
+    if not specified. All types include session recording links. Date range defaults to last 7 days if
+    omitted.'
+- name: get_anomaly_report
+  category: anomaly-friction
+  description: Get a detailed AI-generated report for a specific anomaly, including root cause analysis
+    and recommendations. Requires anomaly_id and anomaly_type from get_anomalies results.
+- name: get_anomalies
+  category: anomaly-friction
+  description: Get recent anomalies detected by Fermat's anomaly detection system. Returns behavioral,
+    traffic, conversion, and search anomalies with details. Filter by anomaly_type (behavioral/traffic/conversion/search),
+    date range, and limit.
+- name: ask_pierre
+  category: pierre-ai
+  description: Ask Pierre, Fermat's AI assistant, a question. Pierre has access to BI analytics, shop
+    creation, bundle creation, behavioral anomaly analysis, module customization, and more. Pierre automatically
+    routes your query to the appropriate sub-agent.
+- name: list_active_dpp_experiments
+  category: experiments
+  description: List all currently live DPP (product funnel) experiments across ALL organizations in a
+    single call. Returns experiment metadata grouped by org — org name, experiment name, start date, and
+    layout variants. Use this for cross-org discovery (e.g. daily significance monitoring) instead of
+    iterating list_experiments per org.
+- name: get_external_session_journey
+  category: session-behavioral
+  description: 'Get detailed session-level data from the brand''s OWN website (external site, not Fermat
+    funnels). Each row is one session with: user path (page sequence), entry/exit pages, engagement signals
+    (product views, add-to-cart count, checkout initiated), behavioral metrics (rage_click counts, etc.),
+    and intention score. Returns multiple sessions by default (up to limit). Use session_id to drill into
+    one specific session. Date range is optional — defaults to the last 30 days if omitted.'
+- name: get_external_session_behavioral_insights
+  category: session-behavioral
+  description: Get aggregate behavioral patterns from session recordings on the brand's OWN website (external
+    site, not Fermat funnels). Shows how external sessions break down by intention score, device type,
+    traffic source, and entry page type, with engagement metrics (avg duration, scroll depth, clicks,
+    product views, time per page). Compare with get_session_behavioral_insights (Fermat funnels) to understand
+    how user behavior differs between the brand site and Fermat experiences. Filter by behavioral tag
+    to focus on UX problems. Date range is optional — defaults to the last 30 days if omitted.
+- name: get_session_checkout_analysis
+  category: session-behavioral
+  description: 'Analyze checkout conversion patterns across session recordings. Shows where checkout conversions
+    drop off by segment: traffic source, device type, intention score, and country. Returns session counts,
+    checkout completion counts, revenue, and engagement metrics for each segment. Use this to answer questions
+    like ''which traffic sources convert best?'' and ''do mobile users check out less than desktop?''.
+    Date range is optional — defaults to the last 30 days if omitted.'
+- name: get_session_funnel_journey
+  category: funnel
+  description: 'Get detailed session-level data with full funnel event sequences, behavioral tags, and
+    checkout outcomes. Each row is one session with its complete journey: funnel events (PAGE_LOAD → PRODUCT_VIEWED
+    → PRODUCT_ADDED → CHECKOUT_STARTED → ...), behavioral metrics (rage_click counts, dead_click counts,
+    etc.), intention score, CRO analysis, and checkout result. Returns multiple sessions by default (up
+    to limit). Use session_id to drill into one specific session, or filter by funnel/experiment/intention/behavioral_tag
+    to find interesting sessions. Date range is optional — defaults to the last 30 days if omitted.'
+- name: get_session_behavioral_insights
+  category: session-behavioral
+  description: Get aggregate behavioral patterns across session recordings. Shows how sessions break down
+    by intention score, checkout completion, traffic source, and device type, with engagement metrics
+    (avg duration, scroll depth, clicks). Use this to understand behavioral patterns like 'high-intent
+    Meta mobile sessions have 3x the rage clicks'. Filter by behavioral tag (rage_click, dead_click, u_turn,
+    excessive_scrolling, error_click, confusion_loop) to focus on specific UX problems. Date range is
+    optional — defaults to the last 30 days if omitted.
+- name: get_ad_creatives
+  category: ad-performance
+  description: Get ad creative metadata including ad copy, image URLs, video URLs, and video duration.
+    Use this to understand what creative assets are running for each ad. Filter by ad_channel, campaign_id,
+    or ad_set_id. Returns creative_id, ad_copy, ad_image_url, video_source_url, and video_length_seconds.
+- name: get_ad_insights
+  category: ad-performance
+  description: Get per-ad performance metrics showing which individual ads, ad sets, and campaigns drive
+    traffic and conversions to each destination. Shows ad spend, clicks, impressions, reach, in-unit sessions/purchases/revenue,
+    ROAS, CPA, CVR, and AOV at the ad level. Filter by ad_channel (Meta/TikTok), campaign_id, ad_set_id,
+    fermat_shop_id, or routing_config_id. Use this to identify top-performing and underperforming ads.
+    Date range is optional — defaults to the last 30 days if omitted.
+- name: get_product_variant_metrics
+  category: product-catalog
+  description: Get per-product-variant performance metrics within funnels from GA4. Shows which SKUs are
+    driving sessions, views, add-to-carts, purchases, and revenue within a specific funnel or experiment
+    layout. Filter by product_funnel_id, product_funnel_layout_id, or experiment config. Date range is
+    optional — defaults to the last 30 days if omitted.
+- name: get_heatmap_scroll_analysis
+  category: session-behavioral
+  description: Get AI-analyzed scroll depth data for a funnel. Returns scroll depth markers bucketed at
+    5% intervals showing how many visitors reached each depth, drop-off points, consistency score, and
+    total visitors. Works for both DPP funnels and AIS funnels. Scope to a specific shop, tile, product,
+    bundle, product_group, product_funnel, or product_funnel_layout using optional ID filters. Date range
+    is optional — defaults to the last 30 days if omitted.
+- name: get_heatmap_click_analysis
+  category: session-behavioral
+  description: Get AI-analyzed click heatmap data for a funnel. Returns clustered click areas with labels
+    (e.g. 'Add to Cart button'), click percentages, confidence scores, top engagement areas, and conversion
+    rate. Works for both DPP funnels and AIS funnels. Scope to a specific shop, tile, product, bundle,
+    product_group, product_funnel, or product_funnel_layout using optional ID filters. Date range is optional
+    — defaults to the last 30 days if omitted.
+- name: get_destination_insights
+  category: destination-insights
+  description: Get destination-level performance insights combining ad spend, GA4 conversions, halo attribution,
+    and in-unit metrics. Shows ROAS, CPA, CVR, revenue, purchases, ad spend, and halo allocations per
+    destination broken down by ad channel. This is the primary tool for ad performance data — use it to
+    answer questions about ROAS, CPA, ad spend, impressions, clicks, and cost efficiency across Meta,
+    TikTok, Google Ads, and other channels. Date range is optional — defaults to the last 30 days if omitted.
+- name: get_experiment_results
+  category: experiments
+  description: 'Get performance results for any experiment returned by list_experiments. Automatically
+    routes to the correct data source based on experiment_type: shop_experiment types return layout variant
+    comparison (sessions, conversions, revenue, CVR, AOV per layout); routing config types return Fermat
+    vs external comparison (ROAS, CPA, revenue, CVR, purchases, traffic, spend, significance); product_group_experiment
+    types return per-layout-variant DPP metrics (sessions, PDP views, add-to-carts, checkouts, purchases,
+    revenue, CVR, revenue/session, revenue/order) from GA4 or Fermat (Claire) attribution — plus statistical
+    significance analysis when an External variant is present: Revenue/Session on source=fermat (Claire),
+    CVR/ATC Rate/Checkout Rate on source=ga4. Stat sig includes lift, confidence, Bayesian probability,
+    confidence intervals, and Holm-Bonferroni correction for multi-layout experiments. attribution_mode
+    selects in-session (default) or 1-day-click attribution (fermat source only). Use the experiment_type
+    and relevant ID from list_experiments output. Date range is optional — defaults to the last 30 days
+    if omitted.'
+- name: list_experiments
+  category: experiments
+  description: List all experiments for an organization — covers internal layout A/B tests (shop_experiment),
+    URL routing split tests (weighted_routing_config, geo_routing_config, user_agent_routing_config),
+    and product funnel experiments (product_group_experiment — A/B tests created within Dynamic Product
+    Pages under a Product Group). Returns experiment metadata, status, dates, and related details. Filter
+    by status or experiment_type, or omit filters to get everything.
+- name: get_funnel_metrics
+  category: funnel
+  description: Get funnel performance metrics including sessions, conversions, revenue, CVR, and AOV.
+    Data comes from the analytics pipeline (BigQuery → dbt → Cube.js). Filter by funnel_id and date range.
+    Group by day/week/month. Date range is optional — defaults to the last 30 days if omitted.
+- name: get_sov_report
+  category: other
+  description: 'Check the status and retrieve results of a Share of Voice (SoV) report. Use this to poll
+    after starting a report with generate_sov_report. Status transitions: pending → processing (with progress
+    0-100) → completed. When completed, returns prompts (per-prompt SoV data) and unstable (aggregate
+    stats).'
+- name: get_ais_crawler_analytics
+  category: ai-search
+  description: Get AI crawler activity on an org's funnels. Shows which AI platforms (OpenAI, Anthropic,
+    Perplexity, Google AI, etc.) are crawling each funnel, total bot visits, and per-crawler breakdown.
+    Higher crawl frequency correlates with better AI search visibility. Optionally filter by start_date
+    and end_date.
+- name: get_ais_citations
+  category: ai-search
+  description: Get AI Search citation data showing how many times an org's funnels appear in AI search
+    results (ChatGPT, Perplexity, Google AI, etc.). Returns total citation count, per-funnel citation
+    breakdown, and individual citation details including the prompt/keyword, search source, rank, and
+    matched funnel. Requires start_date and end_date. Optionally filter by probe_type or search_source.
+- name: get_ais_prompts
+  category: ai-search
+  description: Get AI Search prompt contents for an org. Optionally filter by a specific prompt key.
+- name: list_forever_links
+  category: other
+  description: List forever link configs and their routing destinations for an org. Shows link name/slug,
+    current routing config with destinations (Fermat shops or external URLs) and traffic weights. Shows
+    the most recent routing config per link with active destinations. Supports pagination.
+- name: get_destination_details
+  category: destination-insights
+  description: Get full details of a single product funnel (destination) by its ID, including product
+    groups, layouts, and live product counts. Returns product groups with their layouts, precedence order,
+    and live product counts.
+- name: list_funnels
+  category: funnel
+  description: 'List all funnels (shops) for an organization. Returns every funnel type: product funnels
+    (DPP), AI search funnels (AEO/SEO), and regular shops. Each result includes tags, product funnel data
+    (if DPP), AI search metadata (if AIS), and forever link routing info. Use the optional type filter
+    to scope to a specific funnel type, or omit it to get everything. Supports search and pagination.'

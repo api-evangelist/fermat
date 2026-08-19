@@ -1,0 +1,65 @@
+# FERMAT (FERMÀT)
+
+> AI-native commerce platform for direct-to-consumer and enterprise brands. FERMÀT detects
+> shopper behavior, recommends revenue-optimizing actions, generates adaptive storefront
+> experiences and product pages, and feeds performance back into detection — consolidating the
+> analytics, personalization, search and experimentation stack into one system.
+
+generated: 2026-08-13
+method: generated
+source: API Evangelist enrichment pipeline, from apis.yml and the artifacts in this repository.
+note: >
+  FERMÀT does not serve an /llms.txt of its own. www.fermatcommerce.com 301-redirects every
+  unknown path to the site root and help.fermatcommerce.com returns 404 for /llms.txt. This file
+  is API Evangelist's generated summary, not a FERMÀT publication.
+
+## What an agent can actually call
+
+FERMÀT ships **no public REST API and no OpenAPI**. Its two machine surfaces are:
+
+1. **FERMÀT Platform MCP server** — a remote, OAuth-protected Model Context Protocol server.
+   - Endpoint: `https://mcp.fermatcommerce.com/mcp/fermat-mcp` (Streamable HTTP, POST only)
+   - Auth: OAuth 2.1 authorization-code + PKCE (S256), dynamic client registration supported.
+     Sign in with existing FERMÀT platform credentials; the provider names Auth0 as the IdP.
+   - Access: **customer-only** and **read-only**. The provider states write capabilities are
+     "coming soon". An anonymous `tools/list` returns JSON-RPC `-32001`.
+   - 64 tools across 12 documented modules: Product Catalog, Funnel Analytics, Ad Performance,
+     Destination Insights, Experiments, Session & Behavioral, Anomaly & Friction, Branding,
+     Offers, Bundles, Product Pages, and Pierre AI (a natural-language BI agent).
+   - Full tool list with descriptions: `mcp/fermat-mcp.yml`
+2. **FERMÀT Pixel v2** — a first-party browser ES module a brand embeds to emit commerce events.
+   - Loader: `https://static.clairedefermat.com/pixel/v2/claire.mjs` (unpinned)
+   - API: `window.fermat({ method: "init" | "track" | "status", ... })`
+   - Six documented events: `page_view`, `view_product`, `add_to_cart`, `remove_from_cart`,
+     `begin_checkout`, `purchase`. Derived event schema: `asyncapi/fermat-pixel-asyncapi.yml`
+
+`api.fermatcommerce.com` runs a Kong gateway but exposes **no public route** — every path returns
+`{"message":"no Route matched with those values"}`. Do not treat it as an API base URL.
+
+## Docs
+- MCP guide: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+- Pixel v2 install guide: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+- Help center: https://help.fermatcommerce.com/en/
+- Integrations: https://help.fermatcommerce.com/en/collections/19679637-integrations
+- Changelog: https://help.fermatcommerce.com/en/articles/11588666-what-s-new-at-fermat-product-features-and-updates
+
+## Commercial
+- No published pricing. `/pricing` and `/enterprise` both redirect to the site root; the only
+  commercial path is https://www.fermatcommerce.com/book-a-call
+- Terms: https://www.fermatcommerce.com/terms · Privacy: https://www.fermatcommerce.com/privacy
+- Compliance: SOC 2 Type II (audited annually), GDPR, CCPA. Subprocessors:
+  https://www.fermatcommerce.com/subprocessor-list
+
+## Known gaps (as of 2026-08-13)
+- No OpenAPI, GraphQL SDL, AsyncAPI, or A2A agent card published by FERMÀT.
+- No status page (`status.fermatcommerce.com` does not resolve), no SLA, no deprecation policy.
+- No rate limits published and no rate-limit headers returned on any response.
+- No OAuth scope registry: the RFC 8414 metadata omits `scopes_supported`.
+- No first-party package on any registry; no public repositories in github.com/fermatcommerce.
+
+## Repository artifacts
+- mcp/fermat-mcp.yml · well-known/fermat-well-known.yml · authentication/fermat-authentication.yml
+- conventions/fermat-conventions.yml · errors/fermat-problem-types.yml · lifecycle/fermat-lifecycle.yml
+- packages/fermat-packages.yml · components/fermat-components.yml · data-model/fermat-data-model.yml
+- plans/fermat-plans-pricing.yml · rate-limits/fermat-rate-limits.yml · conformance/fermat-conformance.yml
+- asyncapi/fermat-pixel-asyncapi.yml · skills/_index.yml · changelog/fermat-changelog.yml

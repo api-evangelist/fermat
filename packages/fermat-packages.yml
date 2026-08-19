@@ -1,0 +1,56 @@
+generated: '2026-08-13'
+method: searched
+source: registry.npmjs.org search (fermat, fermatcommerce, fermat-commerce), api.github.com/orgs/fermatcommerce,
+  https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+note: FERMAT publishes no client library to any package registry. Its one first-party, developer-installed
+  distribution is the FERMAT Pixel v2, served from its own CDN as an ES module — there is no registry
+  metadata endpoint to query, and the documented install URL is unpinned.
+registries_searched:
+- npm
+- PyPI
+- RubyGems
+- crates.io
+- Maven Central
+- NuGet
+- pkg.go.dev
+- Packagist
+registry_results: No first-party FERMAT package on any registry. npm hits for "fermat" are unrelated mathematics
+  libraries (Fermat primality tests, @mathigon/fermat).
+github_org:
+  url: https://github.com/fermatcommerce
+  exists: true
+  public_repos: 0
+  created: '2021-06-29'
+  note: The org is real and first-party but publishes zero public repositories, so no GitHubOrganization
+    pointer is emitted — there is nothing there for a developer to read.
+packages:
+- name: FERMAT Pixel v2 (claire.mjs)
+  language: javascript
+  registry: cdn
+  official: true
+  url: https://static.clairedefermat.com/pixel/v2/claire.mjs
+  version: null
+  published: null
+  note: 'CDN-distributed ES module with no registry metadata endpoint. The documented install URL is UNPINNED
+    — it floats to whatever is current, so a consumer cannot tell which build they are getting and neither
+    can we. The install guide''s verification example shows window.fermat({method:''status''}) returning
+    version ''2.0.0'', but that is documentation prose, not the served artifact. Best available currency
+    evidence is the CDN Last-Modified header: Fri, 07 Aug 2026 18:53:41 GMT (ETag 66b928a44b5517c46af0802510558db6,
+    18718 bytes).'
+  last_modified: '2026-08-07'
+  docs: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  install: ES module dynamic import from a <script> tag in <head>, or a GTM Custom HTML tag
+- name: FERMAT Pixel v2 (legacy pixel.js)
+  language: javascript
+  registry: cdn
+  official: true
+  url: https://static.clairedefermat.com/pixel/v2/pixel.js
+  version: null
+  published: null
+  note: 'Superseded bundle, still served (HTTP 200) and explicitly documented as supported: ''Older FERMAT
+    Pixel v2 snippets that load pixel.js are still supported and will continue to work.'' Unpinned; no
+    registry, no version metadata.'
+  docs: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+sdk_count: 1
+sdk_note: 'One official first-party JavaScript library with a documented public API surface (window.fermat
+  command queue: init, track, status). No server-side SDK in any language.'

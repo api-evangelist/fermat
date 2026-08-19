@@ -1,0 +1,47 @@
+generated: '2026-08-13'
+method: searched
+source: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+  + https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  + https://help.fermatcommerce.com/en/articles/11588666-what-s-new-at-fermat-product-features-and-updates
+  + live probes
+versioning_policy:
+  published: false
+  note: 'No written versioning policy. Observed practice: the pixel is path-versioned (/pixel/v2/); the
+    MCP server is unversioned.'
+deprecation_policy:
+  published: false
+  sunset_header: false
+  deprecation_header: false
+  note: 'No deprecation policy, and no RFC 8594 Sunset/Deprecation headers observed. The one deprecation-adjacent
+    statement is a compatibility promise, not a policy: the v2 install guide says older snippets loading
+    pixel.js ''are still supported and will continue to work'' (pixel.js still returns HTTP 200). No Deprecation
+    pointer is emitted.'
+status_page:
+  published: false
+  note: No status page. status.fermatcommerce.com does not resolve (NXDOMAIN); no status link appears
+    on the marketing site, help center or MCP docs. No StatusPage pointer is emitted.
+sla:
+  published: false
+  note: No public SLA. Commercial terms are sales-gated.
+changelog:
+  published: true
+  url: https://help.fermatcommerce.com/en/articles/11588666-what-s-new-at-fermat-product-features-and-updates
+  artifact: changelog/fermat-changelog.yml
+maturity:
+- surface: FERMAT Platform MCP server
+  state: generally available
+  access: customer-only
+  capability: read-only
+  note: 'Provider FAQ: ''External access is currently read-only. Write capabilities are coming soon.''
+    — a stated forward commitment, not a dated roadmap.'
+- surface: FERMAT Pixel v2 (claire.mjs)
+  state: generally available
+  access: customer-only
+  note: Install guide dated 2026-07-02. Supersedes the pixel.js bundle, which remains served and supported.
+- surface: api.fermatcommerce.com
+  state: not publicly exposed
+  note: Kong gateway answering 404 "no Route matched with those values" on every probed path — an internal/partner
+    gateway, not a public API.
+roadmap:
+  published: false
+  note: Only 'coming soon' prose in the MCP FAQ. No dated roadmap page, so no Roadmap pointer is emitted.

@@ -1,0 +1,55 @@
+generated: '2026-08-13'
+method: probed
+source: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
+  + https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
+  + live probes of mcp.fermatcommerce.com
+note: 'No OpenAPI is published. These conventions are read from the two machine surfaces FERMAT actually
+  ships: the MCP server and the browser pixel.'
+auth:
+  style: oauth2 authorization-code + PKCE (MCP); public per-brand Pixel ID (browser pixel)
+  header: 'Authorization: Bearer <token>'
+  see: authentication/fermat-authentication.yml
+idempotency:
+  supported: unknown
+  note: No idempotency guarantee is documented. The MCP host's CORS allowlist includes an idempotency-key
+    header, but that is the Speakeasy Gram platform's generic allowlist and is NOT evidence that FERMAT
+    honours it. External MCP access is read-only today, so the question is largely moot until write tools
+    ship. No Idempotency pointer is emitted.
+pagination:
+  style: unknown
+  note: Several MCP tools are list_* / search_* and plainly paginate, but no parameter names or response
+    envelope are published anonymously; input schemas require an authenticated tools/list.
+transport:
+  mcp: Streamable HTTP, POST only. GET returns 405 with a JSON-RPC advisory.
+  protocol: JSON-RPC 2.0
+  telemetry: POST https://e.clairedefermat.com (pixel events), POST https://sr.clairedefermat.com (session
+    recording), sendBeacon fallback with a text/plain Blob for unload-time delivery.
+error_envelope:
+  mcp: JSON-RPC 2.0 error object
+  pixel_config: '{"success":bool,"error":string}'
+  gateway: '{"message":string} (Kong)'
+  see: errors/fermat-problem-types.yml
+versioning:
+  mcp: No API version in the path; the server slug fermat-mcp is stable. MCP protocol version negotiated
+    via the MCP-Protocol-Version header.
+  pixel: 'Path-versioned: /pixel/v2/claire.mjs. Legacy /pixel/v2/pixel.js still served (HTTP 200) and
+    documented as supported.'
+  api_gateway: api.fermatcommerce.com runs Kong but exposes no public route.
+rate_limit_signaling:
+  headers_observed: []
+  note: No RateLimit-*, X-RateLimit-* or Retry-After header was returned on any anonymous request to any
+    FERMAT host. See rate-limits/fermat-rate-limits.yml.
+retry:
+  client_side: The pixel transport implements bounded retry with exponential backoff (maxRetries default
+    5, retryBaseDelay 2000ms) as shipped in claire.mjs. This is client behaviour, not a documented server
+    contract.
+tracing:
+  request_id: The MCP host returns x-request-id and x-trace-id on every response (Gram platform headers).
+compression:
+  pixel: Session-recording payloads are compressed in a Web Worker before transport; compressed size is
+    logged client-side.
+cross_links:
+  errors: errors/fermat-problem-types.yml
+  authentication: authentication/fermat-authentication.yml
+  lifecycle: lifecycle/fermat-lifecycle.yml
+  rate_limits: rate-limits/fermat-rate-limits.yml

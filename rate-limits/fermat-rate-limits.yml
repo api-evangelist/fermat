@@ -1,0 +1,32 @@
+generated: '2026-08-13'
+method: probed
+source: live anonymous responses from mcp.fermatcommerce.com, e.clairedefermat.com, api.fermatcommerce.com,
+  2026-08-13
+limit_count: 0
+note: 'No rate limits are published anywhere on FERMAT''s public surface, and no rate-limit signalling
+  headers were returned on any anonymous response. The MCP help article documents no throttling. This
+  is an honest zero: an agent integrating against the FERMAT MCP server has neither a documented budget
+  nor a runtime signal to back off on.'
+limits: []
+response_headers:
+  observed: []
+  checked:
+  - RateLimit-Limit
+  - RateLimit-Remaining
+  - RateLimit-Reset
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - Retry-After
+  note: None present on any probed response, including the 401 challenge from the MCP endpoint and the
+    404 from the pixel-config endpoint.
+exhaustion_status: null
+client_side_backoff: The FERMAT Pixel implements its own bounded retry with exponential backoff (maxRetries
+  5, base delay 2000ms), which is client-side resilience rather than a published server limit.
+evidence:
+- url: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  status: 401
+  note: no rate-limit headers on the auth challenge
+- url: https://e.clairedefermat.com/pixel-config/v2?source_id=test
+  status: 404
+  note: no rate-limit headers

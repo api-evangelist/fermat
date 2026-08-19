@@ -1,0 +1,114 @@
+generated: '2026-08-13'
+method: probed
+source: live GET probes of every FERMAT-controlled host, 2026-08-13
+summary: Two real well-known documents are served, both by the MCP host at the RFC 9728 / RFC 8414 path-suffixed
+  locations. No security.txt, OpenID configuration, api-catalog or ai-plugin.json is served by FERMAT
+  on any host.
+false_positive_notes:
+- www.fermatcommerce.com 301-redirects every unknown path (including all /.well-known/*) to the site root
+  — no path there is a document.
+- app.fermatcommerce.com and shopping-assistant.fermatcommerce.com are single-page apps that answer 200
+  with the same HTML shell for every /.well-known/* path. Recorded as misses, not hits.
+- 'help.fermatcommerce.com DOES return 200 text/plain for /.well-known/security.txt, but the document
+  is INTERCOM''s, not FERMAT''s (Canonical: https://app.intercom.com/.well-known/security.txt, Contact:
+  security@intercom.com). The help center is Intercom-hosted. This is NOT a FERMAT security.txt and earns
+  no SecurityTxt pointer.'
+probes:
+- host: mcp.fermatcommerce.com
+  path: /.well-known/oauth-protected-resource/mcp/fermat-mcp
+  status: 200
+  content_type: application/json
+  document: true
+  file: well-known/fermat-oauth-protected-resource.json
+  spec: RFC 9728
+- host: mcp.fermatcommerce.com
+  path: /.well-known/oauth-authorization-server/mcp/fermat-mcp
+  status: 200
+  content_type: application/json
+  document: true
+  file: well-known/fermat-oauth-authorization-server.json
+  spec: RFC 8414
+- host: mcp.fermatcommerce.com
+  path: /.well-known/security.txt
+  status: 404
+  document: false
+- host: mcp.fermatcommerce.com
+  path: /.well-known/openid-configuration
+  status: 404
+  document: false
+- host: mcp.fermatcommerce.com
+  path: /.well-known/api-catalog
+  status: 404
+  document: false
+- host: mcp.fermatcommerce.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  document: false
+- host: mcp.fermatcommerce.com
+  path: /.well-known/agent-card.json
+  status: 404
+  document: false
+- host: api.fermatcommerce.com
+  path: /.well-known/security.txt
+  status: 404
+  document: false
+  note: 'Kong gateway: {"message":"no Route matched with those values"} on every path'
+- host: api.fermatcommerce.com
+  path: /.well-known/openid-configuration
+  status: 404
+  document: false
+- host: api.fermatcommerce.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  document: false
+- host: api.fermatcommerce.com
+  path: /.well-known/api-catalog
+  status: 404
+  document: false
+- host: api.fermatcommerce.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  document: false
+- host: www.fermatcommerce.com
+  path: /.well-known/security.txt
+  status: 301
+  document: false
+  note: redirects to site root
+- host: www.fermatcommerce.com
+  path: /.well-known/api-catalog
+  status: 301
+  document: false
+- host: app.fermatcommerce.com
+  path: /.well-known/security.txt
+  status: 200
+  document: false
+  note: SPA HTML shell, not a document
+- host: app.fermatcommerce.com
+  path: /.well-known/api-catalog
+  status: 200
+  document: false
+  note: SPA HTML shell, not a document
+- host: help.fermatcommerce.com
+  path: /.well-known/security.txt
+  status: 200
+  document: false
+  note: Intercom's security.txt, not FERMAT's — third-party platform document
+- host: help.fermatcommerce.com
+  path: /.well-known/openid-configuration
+  status: 404
+  document: false
+- host: shopping-assistant.fermatcommerce.com
+  path: /.well-known/agent-card.json
+  status: 200
+  document: false
+  note: SPA HTML shell, not a document
+- host: e.clairedefermat.com
+  path: /.well-known/security.txt
+  status: 405
+  document: false
+  note: POST-only ingest host
+- host: sr.clairedefermat.com
+  path: /.well-known/security.txt
+  status: 405
+  document: false
+  note: POST-only ingest host

@@ -1,0 +1,48 @@
+generated: '2026-08-13'
+method: probed
+source: live anonymous requests to https://mcp.fermatcommerce.com/mcp/fermat-mcp and sibling hosts, 2026-08-13
+format: jsonrpc-2.0
+note: FERMAT publishes no OpenAPI and no error reference page, so this catalog is not derived from a spec.
+  Every entry below was observed on a live anonymous request; the envelope is JSON-RPC 2.0, not RFC 9457
+  problem+json.
+envelope:
+  shape: '{"jsonrpc":"2.0","id":<id|null>,"error":{"code":<int>,"message":"<string>"}}'
+  content_type: application/json
+problem_types:
+- code: -32001
+  http_status: 401
+  title: expired or invalid access token
+  surface: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  remediation: Complete the OAuth authorization-code + PKCE flow against the advertised authorization
+    server, then retry with a Bearer token in the Authorization header.
+  observed: true
+- code: -32002
+  http_status: 404
+  title: mcp server not found
+  surface: https://mcp.fermatcommerce.com/mcp/<unknown-slug>
+  remediation: Use the published server slug fermat-mcp. This code distinguishes a wrong server path from
+    an auth failure.
+  observed: true
+- code: -32000
+  http_status: 405
+  title: POST-based Streamable HTTP transport required
+  surface: GET https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  remediation: Use POST. The server returns an explicit advisory that a GET is a normal client compatibility
+    probe and can be ignored.
+  observed: true
+non_jsonrpc_surfaces:
+- surface: https://api.fermatcommerce.com/*
+  status: 404
+  body: '{"message":"no Route matched with those values"}'
+  note: Kong API gateway default. No route is publicly exposed on this host.
+  observed: true
+- surface: https://e.clairedefermat.com/pixel-config/v2?source_id=<unknown>
+  status: 404
+  body: '{"success":false,"error":"Pixel configuration not found"}'
+  note: Pixel config lookup; envelope is {success:false,error:string}.
+  observed: true
+- surface: GET https://e.clairedefermat.com/ and https://sr.clairedefermat.com/
+  status: 405
+  body: Method not allowed
+  note: Telemetry ingest hosts accept POST only.
+  observed: true
