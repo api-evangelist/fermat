@@ -35,7 +35,7 @@ x-backed-by:
 x-tier: enriched
 x-tier-reason: live remote MCP server (64 published tools) + first-party browser pixel with a documented
   event schema
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-13'
 tags:
