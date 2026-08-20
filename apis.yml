@@ -41,6 +41,20 @@ modified: '2026-08-13'
 tags:
 - Company
 - Commerce
+- E-Commerce
+- Personalization
+- Analytics
+- Conversion Rate Optimization
+- Artificial Intelligence
+- Merchandising
+- MCP
+- Agentic Commerce
+- Session Replay
+- Experimentation
+- Attribution
+tags_raw:
+- Company
+- Commerce
 - Ecommerce
 - Personalization
 - Analytics
@@ -63,6 +77,12 @@ apis:
   humanURL: https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools
   baseURL: https://mcp.fermatcommerce.com/mcp/fermat-mcp
   tags:
+  - MCP
+  - Commerce
+  - Analytics
+  - Artificial Intelligence
+  - Agentic Commerce
+  tags_raw:
   - MCP
   - Commerce
   - Analytics
@@ -91,6 +111,12 @@ apis:
   humanURL: https://help.fermatcommerce.com/en/articles/14280269-fermat-pixel-v2-installation-guide-direct-script-google-tag-manager
   baseURL: https://e.clairedefermat.com
   tags:
+  - E-Commerce
+  - Analytics
+  - Session Replay
+  - Attribution
+  - Personalization
+  tags_raw:
   - Ecommerce
   - Analytics
   - Session Replay
