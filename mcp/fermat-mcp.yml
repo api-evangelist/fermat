@@ -8,6 +8,11 @@ deployment:
   endpoint: https://mcp.fermatcommerce.com/mcp/fermat-mcp
   auth: oauth
   verified: probed
+  probe_prior: (never probed)
+  probe: gated
+  probe_why: RFC 9728 challenge on the MCP path only
+  checked: '2026-09-11'
+  source: claimed-backlog re-probe 2026-09-11
 transport: streamable-http (POST); GET returns 405 with a JSON-RPC advisory that this server is POST-only
 hosting: Hosted on Speakeasy Gram (mcp.fermatcommerce.com CNAMEs to cname.prod.getgram.ai) but served
   from FERMAT's own domain and documented in FERMAT's own help center.
