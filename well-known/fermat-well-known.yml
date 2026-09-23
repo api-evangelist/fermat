@@ -1,4 +1,4 @@
-generated: '2026-08-13'
+generated: '2026-09-19'
 method: probed
 source: live GET probes of every FERMAT-controlled host, 2026-08-13
 summary: Two real well-known documents are served, both by the MCP host at the RFC 9728 / RFC 8414 path-suffixed
@@ -112,3 +112,48 @@ probes:
   status: 405
   document: false
   note: POST-only ingest host
+hosts:
+- host: ''
+  documents:
+  - path: /.well-known/oauth-protected-resource/mcp/fermat-mcp
+    status: 200
+    file: fermat-oauth-protected-resource.json
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server/mcp/fermat-mcp
+    status: 200
+    file: fermat-oauth-authorization-server.json
+    content_type: application/json
+- host: https://mcp.fermatcommerce.com
+  documents:
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: fermat-mcp-oauth-protected-resource.json
+    bytes: 172
+  - path: /.well-known/oauth-authorization-server/mcp/fermat-mcp
+    status: 200
+    file: fermat-mcp-oauth-authorization-server.json
+    bytes: 916
+  path_echo_control: passed
+x-shape-fix:
+  converted: '2026-08-20'
+  from: probes
+  note: Rewritten into hosts[] -> documents[], the only shape well_known_docs() in score.rb reads. A served
+    .well-known surface recorded in any other shape scores as absent. Promoted ONLY the 2xx rows out of
+    the probe log; non-2xx probes are real negative results and were left in place, not converted into
+    documents.
+x-mcp-probe:
+  probed: '2026-09-19'
+  issue: roadmap#321, roadmap#337
+  documents:
+  - host: https://mcp.fermatcommerce.com
+    path: /.well-known/oauth-protected-resource
+    file: fermat-mcp-oauth-protected-resource.json
+  - host: https://mcp.fermatcommerce.com
+    path: /.well-known/oauth-authorization-server/mcp/fermat-mcp
+    file: fermat-mcp-oauth-authorization-server.json
+  validated_on: resource (RFC 9728) / issuer (RFC 8414, OIDC)
+  negative_control: one per host; a 2xx JSON object at an impossible path discards the host
+note: 'MCP-host OAuth discovery added 2026-09-19 (roadmap#321/#337): the harvest visits a provider''s
+  primary hosts, and RFC 9728 protected-resource metadata lives on the MCP host, so these documents existed
+  and were invisible to the scorer. Fetched live and validated on `resource`/`issuer`; one negative control
+  per host.'
