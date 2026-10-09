@@ -466,3 +466,16 @@ tools:
     (DPP), AI search funnels (AEO/SEO), and regular shops. Each result includes tags, product funnel data
     (if DPP), AI search metadata (if AIS), and forever link routing info. Use the optional type filter
     to scope to a specific funnel type, or omit it to get everything. Supports search and pagination.'
+rfc9728:
+  endpoint: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+  metadata_url: https://mcp.fermatcommerce.com/.well-known/oauth-protected-resource/mcp/fermat-mcp
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://mcp.fermatcommerce.com/mcp/fermat-mcp
+    authorization_servers:
+    - https://mcp.fermatcommerce.com/mcp/fermat-mcp
+    bearer_methods_supported:
+    - header
