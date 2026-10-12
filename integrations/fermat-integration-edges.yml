@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/fermat/integrations
+- https://n8n.io/integrations/fermat/
+- https://composio.dev/toolkits/fermat
+- https://monid.ai/tools/fermat
+checked:
+- https://composio.dev/toolkits/fermat
+- https://monid.ai/tools/fermat
+- https://n8n.io/integrations/fermat/
+- https://zapier.com/apps/fermat/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
