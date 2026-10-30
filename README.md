@@ -64,6 +64,126 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Fermat is a company surfaced as a portfolio company of bain-capital-ventures, greylock, qed-investors and added to the API Evangelist network as a stub for enrichment. Sector: commerce. This profile is a lead awaiting the enrichment pipeline.
+FERMÀT is an AI-native commerce platform that consolidates the shopper analytics, personalization, and experimentation stack into a single agentic system for direct-to-consumer and enterprise brands. It runs a closed loop — detect shopper behavior, recommend revenue-optimizing actions, generate adaptive storefront experiences and product pages, then feed performance signals back into detection — replacing tools like FullStory, Amplitude, Algolia, and Optimizely. FERMÀT integrates with ecommerce platforms including Shopify Plus, Salesforce Commerce Cloud, Adobe Commerce, and Oracle ATG via batch and streaming data syncs, and serves brands such as Glossier, GNC, Backcountry, AWAY, Travelpro, and TONAL. Surfaced as a portfolio company of Bain Capital Ventures, Greylock, and QED Investors.
 
-Backed by: bain-capital-ventures, greylock, qed-investors — https://www.fermatcommerce.com/
+**Areas:** Company · Commerce · E-Commerce · Personalization · Analytics · Conversion Rate Optimization · Artificial Intelligence · Merchandising · MCP · Agentic Commerce · Session Replay · Experimentation
+
+## Fermat on APIs.io
+
+Everything profiled for Fermat is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/fermat/](https://apis.io/providers/fermat/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [FERMAT Platform MCP Server](https://apis.io/apis/fermat/fermat-platform-mcp-server/) — Remote Model Context Protocol server exposing 64 read-only tools over FERMAT commerce data — product catalog, funnel analytics, ad performance, destination…
+- [FERMAT Pixel v2](https://apis.io/apis/fermat/fermat-pixel-v2/) — First-party browser ES module (claire.mjs) a brand embeds to emit commerce telemetry to FERMAT. Exposes a window.fermat command queue with init, track and…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [FERMAT Pixel v2 Event Ingest](https://apis.io/asyncapis/fermat/fermat-pixel-asyncapi/)
+
+#### Event channels (1)
+
+Individual events and webhooks the provider emits.
+
+- [/](https://apis.io/channels/fermat/pixelevents/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Fermat Platform (External)](https://apis.io/servers/fermat/fermat-platform-external/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Fermat Authentication](https://apis.io/security/fermat/fermat-authentication/)
+- [Fermat Domain Security](https://apis.io/security/fermat/fermat-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Fermat Plans Pricing](https://apis.io/plans/fermat/fermat-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Fermat Rate Limits](https://apis.io/rate-limits/fermat/fermat-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.fermatcommerce.com/)
+- [Documentation](https://help.fermatcommerce.com/en/)
+- [Getting started](https://help.fermatcommerce.com/en/articles/14431099-fermat-mcp-connect-your-commerce-data-to-ai-tools)
+- [API reference](https://mcp.fermatcommerce.com/mcp/fermat-mcp)
+- [Support](https://help.fermatcommerce.com/en/)
+- [Changelog](https://help.fermatcommerce.com/en/articles/11588666-what-s-new-at-fermat-product-features-and-updates)
+- [Blog](https://www.fermatcommerce.com/resources)
+- [Compliance](https://www.fermatcommerce.com/subprocessor-list)
+- [Terms of service](https://www.fermatcommerce.com/terms)
+- [Privacy policy](https://www.fermatcommerce.com/privacy)
+
+## API Evangelist rating
+
+**Kin Score 41.9** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.8 |
+| Contract quality | 39.6 |
+| Contract governance | 18.2 |
+| Operational transparency | 15.8 |
+| Developer ergonomics | 56.5 |
+| Access clarity | 35.5 |
+
+**Agent readiness 47.7** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 27.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/fermat/](https://apis.io/providers/fermat/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Fermat: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/fermat/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
